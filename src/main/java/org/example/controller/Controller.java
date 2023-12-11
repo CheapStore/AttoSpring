@@ -32,10 +32,11 @@ public class Controller {
     private TerminalService terminalService;
     @Autowired
     private CardService cardService;
+    @Autowired
+    private DatabaseUtil databaseUtil;
 
 
     public void start() {
-        DatabaseUtil databaseUtil = new DatabaseUtil();
         databaseUtil.createProfileTable();
         databaseUtil.createCardTable();
         databaseUtil.createTerminalTable();
@@ -253,6 +254,7 @@ public class Controller {
             switch (option) {
                 case 1 -> {
                     List<ProfileDTO> profil_list = userService.getProfillist();
+//                    profilee();
                     if (profil_list != null) {
                         for (ProfileDTO cardDTO : profil_list) {
                             System.out.println(cardDTO);
@@ -389,8 +391,7 @@ public class Controller {
         do {
             number = scanner.nextLine("enter the current card number :");
         } while (number.trim().isEmpty());
-
-        cardService.delete_card(number);
+        cardService.delete_card1(number);
 
     }
 
@@ -429,9 +430,9 @@ public class Controller {
         }
 
     }
-    private void profilee(){
-        userService.profilee();
-    }
+//    private void profilee(){
+//        userService.profilee();
+//    }
        private void creatterminal(ProfileDTO profileDTO){
            String code,adress;
 

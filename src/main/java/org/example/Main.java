@@ -7,7 +7,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class Main {
     public static void main(String[] args) {
-//        Controller controller=new Controller();
         ApplicationContext context=new AnnotationConfigApplicationContext(SpringConfig.class);
         Controller controller = context.getBean("controller", Controller.class);
         controller.start();

@@ -27,10 +27,10 @@ public class UserService {
         return result;
     }
 
-    public List<ProfileDTO> profilee() {
-        List<ProfileDTO> profileDTOList = profileRepository.getprfile_list();
-        return profileDTOList;
-    }
+//    public List<ProfileDTO> profilee() {
+//        List<ProfileDTO> profileDTOList = profileRepository.getprfile_list();
+//        return profileDTOList;
+//    }
 
 
     public List<ProfileDTO> getProfillist() {

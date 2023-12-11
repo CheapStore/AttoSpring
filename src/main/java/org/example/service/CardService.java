@@ -53,9 +53,10 @@ public class CardService {
         return b;
     }
 
-    public void delete_card(String number) {
-        boolean deletecard = cardRepository.deletecard(number);
-        if (deletecard){
+
+    public void delete_card1(String number) {
+        boolean b = cardRepository.deletecard1(number);
+        if (b){
             System.out.println("Delete 👌");
         }else {
             System.out.println("no Delete 🥱");

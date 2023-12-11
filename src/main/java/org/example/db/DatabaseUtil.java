@@ -1,14 +1,20 @@
 package org.example.db;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+@Setter
+@Getter
+@Component
 public class DatabaseUtil {
 
     public void createProfileTable() {
-
         try {
             Connection con = DatabaseUtil.getConnection();
             Statement statement = con.createStatement(); // <3>

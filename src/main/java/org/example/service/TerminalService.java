@@ -20,7 +20,7 @@ public class TerminalService {
                     }
                 }
             }
-            boolean result = terminalReporistory.creatTerminal(terminal);
+        boolean result = terminalReporistory.creatTerminal(terminal);
             if (result) {
                 System.out.println("terminal created successfuly 👌👌👌");
             }else {
@@ -29,11 +29,11 @@ public class TerminalService {
             return result;
         }
 
-
-        public   List<TerminalDTO> getTerminal() {
-            List<TerminalDTO> terminallist = TerminalReporistory.getTerminal();
-            return terminallist;
+public   List<TerminalDTO> getTerminal() {
+         List<TerminalDTO> terminal = terminalReporistory.getTerminal();
+         return terminal;
         }
+
 
     public boolean chesk(String code) {
        return terminalReporistory.chesk(code);
