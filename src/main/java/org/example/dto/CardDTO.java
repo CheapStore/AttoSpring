@@ -2,6 +2,7 @@ package org.example.dto;
 
 import lombok.*;
 import org.example.enums.Status;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@Component
 public class CardDTO {
     private String number;
     private LocalDate exp_date;

@@ -17,40 +17,21 @@ public class ProfileRepository {
     @Autowired
    private JdbcTemplate jdbcTemplate;
 
-    public ProfileDTO login(ProfileDTO profileDTO) {
-        try {
-            Connection connection = DatabaseUtil.getConnection();
-            String sql = "select * from profile where phone=? and password=?";
+    public List<ProfileDTO> login(ProfileDTO profileDTO) {
+        String sql = "select * from profile where phone='%s' and password='%s'";
+        sql=String.format(sql,profileDTO.getPhone(),profileDTO.getPassword());
+        List<ProfileDTO> query = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ProfileDTO.class));
+        return query;
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            preparedStatement.setString(1,profileDTO.getPhone());
-            preparedStatement.setString(2,profileDTO.getPassword());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                ProfileDTO profile=new ProfileDTO();
-                profile.setName(resultSet.getString("name"));
-                profile.setSurname(resultSet.getString("surname"));
-                profile.setPhone(resultSet.getString("phone"));
-                profile.setPassword(resultSet.getString("password"));
-                profile.setCreated_date(resultSet.getTimestamp("created_date").toLocalDateTime());
-                profile.setStatus(Status.valueOf(resultSet.getString("status")));
-                profile.setProfileRole(ProfileRole.valueOf(resultSet.getString("profile_role")));
-                connection.close();
-                return profile;
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
     }
 
     public boolean registration(ProfileDTO profile) {
-        String sql = "insert into profile(name,surname,phone,password,profile_role) values (?,?,?,?,?)";
-        int update = jdbcTemplate.update(sql, profile.getName(), profile.getSurname(), profile.getPhone(), profile.getPassword(), profile.getProfileRole());
+        String sql = "insert into profile (name,surname,phone,password,profile_role) values ('%s','%s','%s','%s','%s')";
+        sql=String.format(sql,profile.getName(), profile.getSurname(), profile.getPhone(), profile.getPassword(), profile.getProfileRole());
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
+
 
     public List<ProfileDTO> getprfile_list() {
         String sql = "select * from profile";
@@ -60,8 +41,9 @@ public class ProfileRepository {
 
 
     public boolean updateProfil(ProfileDTO profileDTO, String psw) {
-        String sql="update  profile set phone=?,status=? where password=?";
-        int update = jdbcTemplate.update(sql, profileDTO.getPhone(), profileDTO.getStatus(), psw);
+        String sql="update  profile set phone='%s',status='%s' where password='%s'";
+        sql=String.format(sql,profileDTO.getPhone(), profileDTO.getStatus(), psw);
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 }

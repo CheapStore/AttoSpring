@@ -18,6 +18,8 @@ import java.util.List;
 @Component
 public class TerminalReporistory {
     @Autowired
+    private TerminalDTO terminalDTO;
+    @Autowired
    private static JdbcTemplate jdbcTemplate;
     public  List<TerminalDTO> getTerminal() {
         String sql = "select * from terminal";
@@ -25,52 +27,46 @@ public class TerminalReporistory {
         return query;
     }
 
+
     public boolean creatTerminal(TerminalDTO terminal) {
-        String sql = "insert into terminal(code,address) values (?,?)";
-        int res = jdbcTemplate.update(sql, terminal.getCode(), terminal.getAddress());
+
+        String sql = "insert into terminal(code,address) values ('%s','%s')";
+        sql=String.format(sql,terminal.getCode(), terminal.getAddress());
+        int res = jdbcTemplate.update(sql);
         return res!=0;
         }
 
 
     public boolean chesk(String code) {
-        boolean execute = false;
-        try {
-            Connection connection = org.example.db.DatabaseUtil.getConnection();
-            String sql = "select  chesk(?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,"'"+code+"'");
-            execute = preparedStatement.execute();
-            System.out.println("execute = " + execute);
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return execute;
-
+        String sql = "select  chesk('%s')";
+        sql=String.format(sql,code);
+        int update = jdbcTemplate.update(sql);
+        return update!=0;
     }
 
     public boolean updateterminal(TerminalDTO terminladto,String old) {
-        String sql = "update terminal set code=?,address=? where code=?";
-        int update = jdbcTemplate.update(sql, terminladto.getCode(), terminladto.getAddress(), old);
+        String sql = "update terminal set code='%s',address='%s', where code="+old;
+        sql=String.format(sql,terminladto.getCode(), terminladto.getAddress());
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 
     public boolean delete(String code) {
-        String sql="delete from  card where number=?";
-        int update = jdbcTemplate.update(sql, code);
+        String sql="delete from  card where number="+code;
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 
     public List<TerminalDTO> getTerminalList() {
         String sql = "select * from terminal";
-        List <TerminalDTO>query = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TerminalDTO.class));
-        return query;
-
+        List<TerminalDTO> terminalDTOList=  jdbcTemplate.query(sql, new BeanPropertyRowMapper(TerminalDTO.class));
+        return terminalDTOList;
     }
 
     public boolean updateterminal_status(String code) {
-        String sql = "update terminal set status='NO_ACTIVE' where code=? and status=?";
-        int update = jdbcTemplate.update(sql, code, "ACTIVE");
+        String sql = "update terminal set status='NO_ACTIVE' where code='%s' and status='%s'";
+        sql=String.format(sql,code, "ACTIVE");
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 }

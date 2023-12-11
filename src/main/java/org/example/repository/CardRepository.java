@@ -17,8 +17,9 @@ public class CardRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
     public boolean createCard(CardDTO card) {
-        String sql = "insert into card(number,exp_date,balance,phone) values (?,?,?,?)";
-        int update = jdbcTemplate.update(sql, card.getNumber(), card.getExp_date(), card.getBalance(), card.getPhone());
+        String sql = "insert into card(number,exp_date,balance,phone) values ('%s','%s','%s','%s')";
+        sql=String.format(sql, card.getNumber(), card.getExp_date(), card.getBalance(), card.getPhone());
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 
@@ -30,28 +31,31 @@ public class CardRepository {
 
 
     public boolean update( CardDTO card) {
-        String sql = "update card set number=?,exp_date=?";
-        int update = jdbcTemplate.update(sql, card.getNumber(), card.getExp_date());
+        String sql = "update card set number='%s',exp_date='%s'";
+        sql=String.format(sql,card.getNumber(), card.getExp_date());
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 
 
     public boolean chesk(String newnumber) {
-        String sql = "select cardchek()";
-        int update = jdbcTemplate.update(sql, newnumber);
+        String sql = "select cardchek('%s')";
+        sql=String.format(sql,newnumber);
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 
     public boolean updateStatus(String number) {
-        String sql = "update  card set status='ACTIVE' where number=?";
-        int update = jdbcTemplate.update(sql, number);
+        String sql = "update  card set status='ACTIVE' where number='%s'";
+        sql=String.format(sql,number);
+        int update = jdbcTemplate.update(sql);
         return update!=0;
     }
 
 
     public boolean deletecard1(String number) {
-        String sql="delete from  card where number=?";
-        int update = jdbcTemplate.update(sql, number);
+        String sql="delete from  card where number="+number;
+        int update = jdbcTemplate.update(sql);
         return update!=0;
 
     }

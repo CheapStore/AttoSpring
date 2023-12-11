@@ -10,15 +10,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class UserService {
-
-
     @Autowired
     ProfileRepository profileRepository;
 
 
 
-    public ProfileDTO login(ProfileDTO profileDTO) {
-        ProfileDTO profile = profileRepository.login(profileDTO);
+    public List<ProfileDTO> login(ProfileDTO profileDTO) {
+       List<ProfileDTO> profile = profileRepository.login(profileDTO);
         return profile;
     }
 

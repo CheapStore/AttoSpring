@@ -34,7 +34,14 @@ public class Controller {
     private CardService cardService;
     @Autowired
     private DatabaseUtil databaseUtil;
-
+    @Autowired
+     private CardDTO cardDTO;
+    @Autowired
+     private ProfileDTO profileDTO;
+    @Autowired
+     private TerminalDTO terminalDTO;
+    @Autowired
+    TransactionDTO transactionDTO;
 
     public void start() {
         databaseUtil.createProfileTable();
@@ -92,20 +99,36 @@ public class Controller {
         profileDTO.setPhone(phoneNumber);
         profileDTO.setPassword(password);
 
-        ProfileDTO profile = userService.login(profileDTO);
-        if (profile == null) {
-            System.out.println("Not found");
-            return;
-        } else {
-            if (profile.getStatus().equals(Status.NO_ACTIVE)) {
+//        ProfileDTO profile = userService.login(profileDTO);
+        List<ProfileDTO> login = userService.login(profileDTO);
+        for (ProfileDTO dto : login) {
+            if (dto == null) {
                 System.out.println("Not found");
                 return;
-            }
-            if (profile.getProfileRole().equals(ProfileRole.USER)) {
-                userMenu(profile);
             } else {
-                adminMenu(profile);
-            }
+                if (dto.getStatus().equals(Status.NO_ACTIVE)) {
+                    System.out.println("Not found");
+                    return;
+                }
+                if (dto.getProfileRole().equals(ProfileRole.USER)) {
+                    userMenu(dto);
+                } else {
+                    adminMenu(dto);
+                }
+        }
+//        if (profile == null) {
+//            System.out.println("Not found");
+//            return;
+//        } else {
+//            if (profile.getStatus().equals(Status.NO_ACTIVE)) {
+//                System.out.println("Not found");
+//                return;
+//            }
+//            if (profile.getProfileRole().equals(ProfileRole.USER)) {
+//                userMenu(profile);
+//            } else {
+//                adminMenu(profile);
+//            }
         }
 
 
@@ -278,7 +301,6 @@ public class Controller {
             psw = scanner.nextLine("Enter old psw  :");
             neww = scanner.nextLine("Enter neww  phone number :");
         }while (psw.isEmpty()||neww.isEmpty());
-        ProfileDTO profileDTO=new ProfileDTO();
         profileDTO.setPhone(neww);
         profileDTO.setStatus(Status.NO_ACTIVE);
         userService.updateProfile(profileDTO,psw);
@@ -297,7 +319,7 @@ public class Controller {
             int option = scanner.nextInt("Choose option: ");
 
             switch (option) {
-                case 1 -> creatterminal(profile);
+                case 1 -> creatterminal();
                 case 2 -> {
                     List<TerminalDTO> terminalList = terminalService.getTerminalList();
                     if (terminalList != null) {
@@ -349,7 +371,6 @@ public class Controller {
             neww= scanner.nextLine("new enter terminal code:");
             newwAdres=scanner.nextLine("new enter terminal adress:");
         }while (old.isEmpty()||neww.isEmpty());
-        TerminalDTO terminalDTO=new TerminalDTO();
         terminalDTO.setAddress(newwAdres);
         terminalDTO.setCode(neww);
         terminalService.updateterminal(terminalDTO,old);
@@ -421,10 +442,10 @@ public class Controller {
                 numbernew = scanner.nextLine("enter a new card number :");
                 year = scanner.nextInt("Enter the expiration date (3-10): ");
             }while (year==0);
-            CardDTO card = new CardDTO();
-            card.setNumber(numbernew);
-            card.setExp_date(LocalDate.now().plusYears(year));
-            cardService.updateCard(card);
+
+            cardDTO.setNumber(numbernew);
+            cardDTO.setExp_date(LocalDate.now().plusYears(year));
+            cardService.updateCard(cardDTO);
         }else {
             System.out.println("Qayta urining");
         }
@@ -433,13 +454,13 @@ public class Controller {
 //    private void profilee(){
 //        userService.profilee();
 //    }
-       private void creatterminal(ProfileDTO profileDTO){
+       private void creatterminal(){
            String code,adress;
 
            do {
                code = scanner.nextLine("Enter terminal code: ");
                adress = scanner.nextLine("Adress:");
-           } while (code.trim().length() == 0);
+           } while (code.trim().isEmpty());
            TerminalDTO terminaldto = new TerminalDTO();
            terminaldto.setCode(code);
            terminaldto.setAddress(adress);
@@ -452,12 +473,12 @@ public class Controller {
         do {
             cardNumber = scanner.nextLine("Enter Card number: ");
             year = scanner.nextInt("Enter the expiration date (3-10): ");
-        } while (cardNumber.trim().length() == 0 || year == 0);
-        CardDTO card = new CardDTO();
-        card.setNumber(cardNumber);
-        card.setExp_date(LocalDate.now().plusYears(year));
-        card.setPhone(profile.getPhone());
-        cardService.createCard(card);
+        } while (cardNumber.trim().isEmpty() || year == 0);
+
+        cardDTO.setNumber(cardNumber);
+        cardDTO.setExp_date(LocalDate.now().plusYears(year));
+        cardDTO.setPhone(profile.getPhone());
+        cardService.createCard(cardDTO);
 
     }
 
@@ -527,7 +548,7 @@ public class Controller {
             code = scanner.nextLine(" enter terminal code:");
             amount = scanner.nextInt("amount :");
         } while (number.isEmpty() || code.isEmpty()||amount==0);
-        TransactionDTO transactionDTO = new TransactionDTO();
+
         transactionDTO.setAmount(amount);
         transactionDTO.setCard_number(number);
         transactionDTO.setTerminal_code(code);
@@ -572,11 +593,11 @@ public class Controller {
             newCardNumber = scanner.nextLine("Enter  Card number: ");
              year = scanner.nextInt("enter year:");
         } while (newCardNumber.trim().length() == 0);
-        CardDTO card = new CardDTO();
-        card.setNumber(newCardNumber);
-        card.setExp_date(LocalDate.now().plusYears(year));
-        card.setPhone(profile.getPhone());
-        cardService.createCard(card);
+
+        cardDTO.setNumber(newCardNumber);
+        cardDTO.setExp_date(LocalDate.now().plusYears(year));
+        cardDTO.setPhone(profile.getPhone());
+        cardService.createCard(cardDTO);
     }
 
     private int getAction() {

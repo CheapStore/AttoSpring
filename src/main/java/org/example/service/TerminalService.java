@@ -11,6 +11,7 @@ public class TerminalService {
     @Autowired
     TerminalReporistory terminalReporistory;
     public boolean creatTerminal(TerminalDTO terminal) {
+        boolean result = terminalReporistory.creatTerminal(terminal);
         List<TerminalDTO> terminalList = getTerminal();
             if (terminalList!=null) {
                 for (TerminalDTO terminaldto : terminalList) {
@@ -20,7 +21,6 @@ public class TerminalService {
                     }
                 }
             }
-        boolean result = terminalReporistory.creatTerminal(terminal);
             if (result) {
                 System.out.println("terminal created successfuly 👌👌👌");
             }else {
@@ -61,8 +61,7 @@ public   List<TerminalDTO> getTerminal() {
 
 
     public List<TerminalDTO> getTerminalList() {
-        List<TerminalDTO> terminalDTOList =terminalReporistory.getTerminalList();
-        return terminalDTOList;
+        return terminalReporistory.getTerminalList();
     }
 
     public void update_status_active_terminal(String code) {
